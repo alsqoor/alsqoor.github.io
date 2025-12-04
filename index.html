@@ -1,0 +1,2325 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALSQOOR Gaming - Server Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary), var(--bg-tertiary));
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: all 0.3s ease;
+        }
+
+        /* Theme Variables */
+        :root {
+            --bg-primary: #0f0f23;
+            --bg-secondary: #1a1a2e;
+            --bg-tertiary: #16213e;
+            --text-primary: #e0e6ed;
+            --text-secondary: #a0a6b3;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --accent-primary: #7c3aed;
+            --accent-secondary: #3b82f6;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --border-color: rgba(0, 0, 0, 0.1);
+            --accent-primary: #7c3aed;
+            --accent-secondary: #3b82f6;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 15px;
+            background: var(--card-bg);
+            border-radius: 25px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .user-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .hamburger {
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            background: none;
+            border: none;
+            padding: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger span {
+            width: 20px;
+            height: 2px;
+            background: var(--text-primary);
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 350px;
+            height: 100vh;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-left: 1px solid var(--border-color);
+            padding: 80px 20px 20px;
+            transition: all 0.3s ease;
+            z-index: 999;
+            overflow-y: auto;
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        .sidebar-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .sidebar-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--accent-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px 0;
+        }
+
+        .setting-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .switch {
+            position: relative;
+            width: 50px;
+            height: 25px;
+            background: var(--border-color);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .switch.active {
+            background: var(--accent-primary);
+        }
+
+        .switch::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 21px;
+            height: 21px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .switch.active::before {
+            left: 27px;
+        }
+
+        .language-selector {
+            display: flex;
+            gap: 10px;
+        }
+
+        .lang-btn {
+            padding: 8px 15px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .lang-btn.active {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+
+        .auth-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .auth-btn {
+            padding: 12px 20px;
+            border: 1px solid var(--accent-primary);
+            background: transparent;
+            color: var(--accent-primary);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .auth-btn.primary {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .auth-btn:hover {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            border-color: #ef4444;
+            color: white;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+            border-color: #dc2626;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal h2 {
+            margin-bottom: 20px;
+            text-align: center;
+            color: var(--accent-primary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .settings-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .settings-tab-btn {
+            padding: 10px 20px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .settings-tab-btn.active {
+            color: var(--accent-primary);
+            border-bottom-color: var(--accent-primary);
+        }
+
+        .settings-tab-content {
+            display: none;
+        }
+
+        .settings-tab-content.active {
+            display: block;
+        }
+
+        .profile-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .profile-avatar-large {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .profile-avatar-large:hover::after {
+            content: '📷';
+            position: absolute;
+            font-size: 2rem;
+            background: rgba(0,0,0,0.7);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .coming-soon-card {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(59, 130, 246, 0.1));
+            border: 2px solid var(--accent-primary);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .coming-soon-card h3 {
+            color: var(--accent-primary);
+            margin-bottom: 15px;
+        }
+
+        .platform-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            font-size: 3rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 5px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox.checked {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+        }
+
+        .checkbox.checked::after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-size: 14px;
+            top: -2px;
+            left: 3px;
+        }
+
+        .tos-content {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .tos-content h4 {
+            color: var(--accent-primary);
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .tos-content p, .tos-content ul {
+            opacity: 0.8;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .tos-content ul {
+            margin-left: 20px;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 20px 20px; /* Account for fixed nav */
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #00d4ff, var(--accent-primary), #f59e0b, #10b981);
+            animation: gradient-shift 3s ease-in-out infinite;
+        }
+
+        @keyframes gradient-shift {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #00d4ff, var(--accent-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        /* Tab System */
+        .tab-navigation {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 5px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            opacity: 0.7;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            opacity: 1;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(124, 58, 237, 0.3);
+            color: white;
+        }
+
+        .tab-btn:hover:not(.active) {
+            opacity: 1;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .servers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .server-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .server-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .server-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .server-card:hover::before {
+            opacity: 1;
+        }
+
+        .server-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .server-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .minecraft .server-icon {
+            background: linear-gradient(45deg, #4CAF50, #8BC34A);
+        }
+
+        .fivem .server-icon {
+            background: linear-gradient(45deg, #f59e0b, #f97316);
+        }
+
+        .server-title {
+            flex: 1;
+        }
+
+        .server-title h2 {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+
+        .server-title p {
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+        }
+
+        .status-online {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-offline {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-online .status-dot {
+            background: #10b981;
+        }
+
+        .status-offline .status-dot {
+            background: #ef4444;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #00d4ff;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .admin-list {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .admin-list h3 {
+            font-size: 1rem;
+            margin-bottom: 15px;
+            color: #f59e0b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .admins {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .admin {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(245, 158, 11, 0.1);
+            color: #fbbf24;
+            padding: 8px 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .admin-status {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .admin-status.online {
+            background: #10b981;
+            animation: pulse 2s infinite;
+        }
+
+        .admin-status.offline {
+            background: #6b7280;
+        }
+
+        .admin-name {
+            font-weight: 600;
+        }
+
+        .admin-role {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-left: auto;
+        }
+
+        .copy-ip-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        .copy-ip-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .server-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .discord-section {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .discord-card {
+            background: rgba(88, 101, 242, 0.1);
+            border: 2px solid rgba(88, 101, 242, 0.3);
+            border-radius: 20px;
+            padding: 40px 30px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .discord-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(88, 101, 242, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .discord-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(88, 101, 242, 0.5);
+            box-shadow: 0 15px 35px rgba(88, 101, 242, 0.2);
+        }
+
+        .discord-card:hover::before {
+            opacity: 1;
+        }
+
+        .discord-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .discord-title {
+            font-size: 1.6rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #5865f2, #7289da);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .discord-subtitle {
+            opacity: 0.8;
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+
+        .discord-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(45deg, #5865f2, #7289da);
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .discord-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(88, 101, 242, 0.4);
+            color: white;
+        }
+
+        .last-updated {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .refresh-btn {
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(124, 58, 237, 0.4);
+        }
+
+        /* Info Cards for Community Tab */
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .info-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .info-card h3 {
+            color: #00d4ff;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .info-card p {
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+
+        /* RTL Support */
+        [dir="rtl"] {
+            text-align: right;
+        }
+
+        [dir="rtl"] .sidebar {
+            right: auto;
+            left: -350px;
+            border-left: none;
+            border-right: 1px solid var(--border-color);
+        }
+
+        [dir="rtl"] .sidebar.active {
+            left: 0;
+        }
+
+        [dir="rtl"] .server-icon {
+            margin-right: 0;
+            margin-left: 15px;
+        }
+
+        [dir="rtl"] .admin-role {
+            margin-left: 0;
+            margin-right: auto;
+        }
+
+        @media (max-width: 768px) {
+            .servers-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .tab-navigation {
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+
+            .tab-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+
+            .info-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                width: 100%;
+                right: -100%;
+            }
+
+            [dir="rtl"] .sidebar {
+                left: -100%;
+            }
+
+            .container {
+                padding-top: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <div class="logo" data-translate="brand">🎮 ALSQOOR Gaming</div>
+        <div class="nav-right">
+            <div class="user-info" id="user-info" style="display: none;">
+                <div class="user-avatar" id="user-avatar">G</div>
+                <span id="user-name">Guest</span>
+            </div>
+            <button class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <!-- Language Section -->
+        <div class="sidebar-section">
+            <h3>🌐 <span data-translate="language">Language</span></h3>
+            <div class="language-selector">
+                <button class="lang-btn active" onclick="changeLanguage('en')">English</button>
+                <button class="lang-btn" onclick="changeLanguage('ar')">العربية</button>
+            </div>
+        </div>
+
+        <!-- Settings Section -->
+        <div class="sidebar-section">
+            <h3>⚙️ <span data-translate="settings">Settings</span></h3>
+            <div class="setting-item">
+                <span data-translate="darkMode">Dark Mode</span>
+                <div class="switch active" id="theme-switch" onclick="toggleTheme()"></div>
+            </div>
+            <div class="setting-item">
+                <span data-translate="autoRefresh">Auto Refresh</span>
+                <div class="switch active" id="refresh-switch" onclick="toggleAutoRefresh()"></div>
+            </div>
+            <div class="setting-item">
+                <span data-translate="notifications">Notifications</span>
+                <div class="switch" id="notification-switch" onclick="toggleNotifications()"></div>
+            </div>
+            <button class="auth-btn" style="margin-top: 15px;" onclick="showSettingsModal()" data-translate="advancedSettings">Advanced Settings</button>
+        </div>
+
+        <!-- Auth Section -->
+        <div class="sidebar-section">
+            <h3>👤 <span data-translate="account">Account</span></h3>
+            <div class="auth-section" id="auth-section">
+                <button class="auth-btn primary" onclick="showModal('login')" data-translate="login">Login</button>
+                <button class="auth-btn" onclick="showModal('register')" data-translate="register">Register</button>
+            </div>
+            <div class="auth-section" id="logged-in-section" style="display: none;">
+                <button class="logout-btn auth-btn" onclick="logout()" data-translate="logout">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Overlay -->
+    <div class="modal-overlay" id="modal-overlay">
+        <!-- Auth Modal -->
+        <div class="modal" id="auth-modal" style="display: none;">
+            <h2 id="modal-title" data-translate="login">Login</h2>
+            <form id="auth-form">
+                <div class="form-group">
+                    <label for="username" data-translate="username">Username</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password" data-translate="password">Password</label>
+                    <input type="password" id="password" required>
+                </div>
+                <div class="form-group" id="email-group" style="display: none;">
+                    <label for="email" data-translate="email">Email</label>
+                    <input type="email" id="email">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()" data-translate="cancel">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="submit-btn" data-translate="login">Login</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Settings Modal -->
+        <div class="modal" id="settings-modal" style="display: none;">
+            <h2>⚙️ <span data-translate="advancedSettings">Advanced Settings</span></h2>
+            
+            <div class="settings-tabs">
+                <button class="settings-tab-btn active" onclick="switchSettingsTab('profile')" data-translate="profile">Profile</button>
+                <button class="settings-tab-btn" onclick="switchSettingsTab('themes')" data-translate="themes">Themes</button>
+                <button class="settings-tab-btn" onclick="switchSettingsTab('customize')" data-translate="customize">Customize</button>
+                <button class="settings-tab-btn" onclick="switchSettingsTab('apps')" data-translate="apps">Apps</button>
+                <button class="settings-tab-btn" onclick="switchSettingsTab('tos')" data-translate="tos">Terms</button>
+            </div>
+
+            <!-- Profile Tab -->
+            <div id="profile-settings" class="settings-tab-content active">
+                <div class="profile-section">
+                    <div class="profile-avatar-large" id="profile-avatar-large">A</div>
+                    <button class="auth-btn" onclick="changeAvatar()" data-translate="changeAvatar">Change Avatar</button>
+                </div>
+                
+                <div class="form-group">
+                    <label data-translate="displayName">Display Name</label>
+                    <input type="text" id="display-name" placeholder="Your Name">
+                </div>
+                
+                <div class="form-group">
+                    <label data-translate="bio">Bio</label>
+                    <textarea id="user-bio" style="width: 100%; padding: 12px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-primary); border-radius: 10px; min-height: 100px; font-family: inherit; resize: vertical;" placeholder="Tell us about yourself..."></textarea>
+                </div>
+                
+                <button class="btn btn-primary" onclick="saveProfile()" data-translate="saveProfile">Save Profile</button>
+            </div>
+
+            <!-- Themes Tab -->
+            <div id="themes-settings" class="settings-tab-content">
+                <div class="coming-soon-card">
+                    <h3>🎨 <span data-translate="themesComingSoon">Custom Themes Coming Soon!</span></h3>
+                    <p data-translate="themesDesc">We're working on amazing custom themes for your dashboard. Stay tuned!</p>
+                    <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                        <div style="padding: 20px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 10px; opacity: 0.5;">
+                            <div style="color: white; font-weight: 600;">Purple Dream</div>
+                        </div>
+                        <div style="padding: 20px; background: linear-gradient(135deg, #f093fb, #f5576c); border-radius: 10px; opacity: 0.5;">
+                            <div style="color: white; font-weight: 600;">Pink Sunset</div>
+                        </div>
+                        <div style="padding: 20px; background: linear-gradient(135deg, #4facfe, #00f2fe); border-radius: 10px; opacity: 0.5;">
+                            <div style="color: white; font-weight: 600;">Ocean Blue</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customize Tab -->
+            <div id="customize-settings" class="settings-tab-content">
+                <h3 style="margin-bottom: 20px;" data-translate="customizeView">Customize Your View</h3>
+                
+                <div class="checkbox-item">
+                    <span data-translate="showServerStats">Show Server Stats</span>
+                    <div class="checkbox checked" onclick="toggleCustomize(this, 'serverStats')"></div>
+                </div>
+                
+                <div class="checkbox-item">
+                    <span data-translate="showStaffOnline">Show Staff Online</span>
+                    <div class="checkbox checked" onclick="toggleCustomize(this, 'staffOnline')"></div>
+                </div>
+                
+                <div class="checkbox-item">
+                    <span data-translate="showDiscordSection">Show Discord Section</span>
+                    <div class="checkbox checked" onclick="toggleCustomize(this, 'discord')"></div>
+                </div>
+                
+                <div class="checkbox-item">
+                    <span data-translate="showPCBuild">Show PC Build Tab</span>
+                    <div class="checkbox checked" onclick="toggleCustomize(this, 'pcBuild')"></div>
+                </div>
+                
+                <div class="checkbox-item">
+                    <span data-translate="showAnimations">Enable Animations</span>
+                    <div class="checkbox checked" onclick="toggleCustomize(this, 'animations')"></div>
+                </div>
+                
+                <button class="btn btn-primary" style="margin-top: 20px;" onclick="saveCustomize()" data-translate="saveCustomize">Save Preferences</button>
+            </div>
+
+            <!-- Apps Tab -->
+            <div id="apps-settings" class="settings-tab-content">
+                <div class="coming-soon-card">
+                    <h3>📱 <span data-translate="mobileApps">Mobile & Desktop Apps</span></h3>
+                    <p data-translate="appsDesc">ALSQOOR Gaming apps are coming soon to your favorite platforms!</p>
+                    <div class="platform-icons">
+                        <div style="text-align: center; opacity: 0.5;">
+                            <div>🍎</div>
+                            <div style="font-size: 0.9rem; margin-top: 10px;">iOS</div>
+                        </div>
+                        <div style="text-align: center; opacity: 0.5;">
+                            <div>🤖</div>
+                            <div style="font-size: 0.9rem; margin-top: 10px;">Android</div>
+                        </div>
+                        <div style="text-align: center; opacity: 0.5;">
+                            <div>🪟</div>
+                            <div style="font-size: 0.9rem; margin-top: 10px;">Windows</div>
+                        </div>
+                        <div style="text-align: center; opacity: 0.5;">
+                            <div>🍏</div>
+                            <div style="font-size: 0.9rem; margin-top: 10px;">macOS</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 30px; opacity: 0.8;" data-translate="notifyMe">Want to be notified when we launch? Join our Discord!</p>
+                    <a href="https://discord.gg/Tpw2myjdVX" target="_blank" class="btn btn-primary" style="margin-top: 15px; text-decoration: none; display: inline-block;">Join Discord</a>
+                </div>
+            </div>
+
+            <!-- TOS Tab -->
+            <div id="tos-settings" class="settings-tab-content">
+                <div class="tos-content">
+                    <h3 style="color: var(--accent-primary); margin-bottom: 20px;" data-translate="tosTitle">Terms of Service</h3>
+                    <p><strong>Last Updated:</strong> December 2024</p>
+                    
+                    <h4 data-translate="tosAcceptance">1. Acceptance of Terms</h4>
+                    <p data-translate="tosAcceptanceText">By accessing and using ALSQOOR Gaming Network services, you accept and agree to be bound by the terms and provision of this agreement.</p>
+                    
+                    <h4 data-translate="tosConduct">2. User Conduct</h4>
+                    <p data-translate="tosConductText">You agree to use our services respectfully and lawfully. Prohibited activities include:</p>
+                    <ul>
+                        <li data-translate="tosNoCheat">Using cheats, hacks, or exploits</li>
+                        <li data-translate="tosNoHarass">Harassment or bullying of other users</li>
+                        <li data-translate="tosNoSpam">Spamming or advertising without permission</li>
+                        <li data-translate="tosNoImpersonate">Impersonating staff or other users</li>
+                    </ul>
+                    
+                    <h4 data-translate="tosAccount">3. Account Responsibility</h4>
+                    <p data-translate="tosAccountText">You are responsible for maintaining the security of your account and for all activities that occur under your account.</p>
+                    
+                    <h4 data-translate="tosModeration">4. Server Moderation</h4>
+                    <p data-translate="tosModerationText">Our staff reserves the right to moderate, warn, kick, or ban users who violate these terms or server rules.</p>
+                    
+                    <h4 data-translate="tosPrivacy">5. Privacy & Data</h4>
+                    <p data-translate="tosPrivacyText">We collect minimal data necessary for server operation. We do not sell your personal information to third parties.</p>
+                    
+                    <h4 data-translate="tosChanges">6. Changes to Terms</h4>
+                    <p data-translate="tosChangesText">We reserve the right to modify these terms at any time. Continued use of our services constitutes acceptance of modified terms.</p>
+                    
+                    <h4 data-translate="tosContact">7. Contact</h4>
+                    <p data-translate="tosContactText">For questions about these terms, contact us through our Discord server.</p>
+                </div>
+                
+                <div style="text-align: center; padding: 20px; background: rgba(255, 255, 255, 0.03); border-radius: 10px;">
+                    <p style="opacity: 0.8;" data-translate="tosAgree">By using ALSQOOR Gaming Network, you agree to these terms.</p>
+                </div>
+            </div>
+
+            <div class="modal-actions" style="margin-top: 20px;">
+                <button type="button" class="btn btn-secondary" onclick="closeModal()" data-translate="close">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1 data-translate="title">🎮 ALSQOOR Gaming Network</h1>
+            <p data-translate="subtitle">Your ultimate gaming destination - Minecraft & FiveM servers</p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-btn active" onclick="switchTab('servers')">🖥️ <span data-translate="servers">Servers</span></button>
+            <button class="tab-btn" onclick="switchTab('community')">👥 <span data-translate="community">Community</span></button>
+            <button class="tab-btn" onclick="switchTab('staff')">👑 <span data-translate="staff">Staff Team</span></button>
+            <button class="tab-btn" onclick="switchTab('pc')">💻 <span data-translate="pcBuild">PC Build</span></button>
+        </div>
+
+        <!-- Servers Tab -->
+        <div id="servers-tab" class="tab-content active">
+            <div class="servers-grid">
+                <!-- Minecraft Server -->
+                <div class="server-card minecraft">
+                    <div class="server-header">
+                        <div class="server-icon">⛏️</div>
+                        <div class="server-title">
+                            <h2>ALSQOOR SMP</h2>
+                            <p>ALSQOOR-SMP.aternos.me</p>
+                        </div>
+                        <div class="status-indicator status-online" id="mc-status">
+                            <div class="status-dot"></div>
+                            <span id="mc-status-text" data-translate="online">Online</span>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="mc-players">0</div>
+                            <div class="stat-label" data-translate="players">Players</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">50</div>
+                            <div class="stat-label" data-translate="max">Max</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="mc-ping">--</div>
+                            <div class="stat-label" data-translate="ping">Ping (ms)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="mc-version">1.20+</div>
+                            <div class="stat-label" data-translate="version">Version</div>
+                        </div>
+                    </div>
+
+                    <div class="admin-list">
+                        <h3>👑 <span data-translate="staffOnline">Staff Online</span></h3>
+                        <div class="admins" id="mc-admins">
+                            <div class="admin">
+                                <div class="admin-status online"></div>
+                                <span class="admin-name">Abdalla_56_yt</span>
+                                <span class="admin-role" data-translate="owner">Owner</span>
+                            </div>
+                            <div class="admin">
+                                <div class="admin-status offline"></div>
+                                <span class="admin-name">LSPD-ASSISTANT (breezy3352)</span>
+                                <span class="admin-role">MC Moderator</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="server-actions">
+                        <button class="copy-ip-btn" onclick="copyToClipboard('ALSQOOR-SMP.aternos.me')">📋 <span data-translate="copyIp">Copy IP</span></button>
+                    </div>
+                </div>
+
+                <!-- FiveM Server -->
+                <div class="server-card fivem">
+                    <div class="server-header">
+                        <div class="server-icon">🚗</div>
+                        <div class="server-title">
+                            <h2>FiveM Roleplay</h2>
+                            <p>cfx.re/join/g7aq9q</p>
+                        </div>
+                        <div class="status-indicator status-online" id="fivem-status">
+                            <div class="status-dot"></div>
+                            <span id="fivem-status-text" data-translate="online">Online</span>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="fivem-players">12</div>
+                            <div class="stat-label" data-translate="players">Players</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">64</div>
+                            <div class="stat-label" data-translate="max">Max</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="fivem-ping">32</div>
+                            <div class="stat-label" data-translate="ping">Ping (ms)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="fivem-queue">0</div>
+                            <div class="stat-label" data-translate="queue">Queue</div>
+                        </div>
+                    </div>
+
+                    <div class="admin-list">
+                        <h3>👑 <span data-translate="staffOnline">Staff Online</span></h3>
+                        <div class="admins" id="fivem-admins">
+                            <div class="admin">
+                                <div class="admin-status online"></div>
+                                <span class="admin-name">Abdalla_56_yt (LSPD Chief)</span>
+                                <span class="admin-role" data-translate="owner">Owner</span>
+                            </div>
+                            <div class="admin">
+                                <div class="admin-status offline"></div>
+                                <span class="admin-name">-RHM (rhm5016)</span>
+                                <span class="admin-role">Chief of Police</span>
+                            </div>
+                            <div class="admin">
+                                <div class="admin-status offline"></div>
+                                <span class="admin-name">Shahin12768</span>
+                                <span class="admin-role">Officer</span>
+                            </div>
+                            <div class="admin">
+                                <div class="admin-status offline"></div>
+                                <span class="admin-name">LSPD-ASSISTANT (breezy3352)</span>
+                                <span class="admin-role">MC Moderator & FiveM Manager</span>
+                            </div>
+                            <div class="admin">
+                                <div class="admin-status offline"></div>
+                                <span class="admin-name">FiveM_Manager (fivem.manager)</span>
+                                <span class="admin-role">Bot Manager</span>
+                            </div>
+                            <div class="admin">
+                                <div class="admin-status offline"></div>
+                                <span class="admin-name">test-bot (yametekudasai2082)</span>
+                                <span class="admin-role">Bot</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="server-actions">
+                        <button class="copy-ip-btn" onclick="copyToClipboard('cfx.re/join/g7aq9q')">📋 <span data-translate="copyConnect">Copy Connect Code</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Community Tab -->
+        <div id="community-tab" class="tab-content">
+            <div class="info-cards">
+                <div class="info-card">
+                    <h3>🎮 <span data-translate="aboutTitle">About ALSQOOR Gaming</span></h3>
+                    <p data-translate="aboutText">Welcome to ALSQOOR Gaming Network! We're a friendly community of gamers who love Minecraft survival and FiveM roleplay. Join us for epic adventures, creative builds, and immersive roleplay experiences.</p>
+                </div>
+                
+                <div class="info-card">
+                    <h3>📜 <span data-translate="rulesTitle">Server Rules</span></h3>
+                    <p data-translate="rulesText">• No griefing or trolling<br>
+                    • Respect all players and staff<br>
+                    • No cheating or exploits<br>
+                    • Keep chat family-friendly<br>
+                    • Follow staff instructions</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>🎯 <span data-translate="eventsTitle">Events & Activities</span></h3>
+                    <p data-translate="eventsText">We regularly host building contests, PvP tournaments, roleplay scenarios, and community events. Follow our Discord for announcements and join the fun!</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>🔧 <span data-translate="supportTitle">Support</span></h3>
+                    <p data-translate="supportText">Need help? Contact our staff team through Discord or use in-game support commands. We're here to ensure you have the best gaming experience possible.</p>
+                </div>
+            </div>
+
+            <!-- Discord Section -->
+            <div class="discord-section">
+                <div class="discord-card">
+                    <div class="discord-icon">💬</div>
+                    <h2 class="discord-title" data-translate="discordTitle">Join Our Discord Community</h2>
+                    <p class="discord-subtitle" data-translate="discordSubtitle">Connect with fellow gamers, get support, and stay updated!</p>
+                    <a href="https://discord.gg/Tpw2myjdVX" target="_blank" class="discord-btn">
+                        <span>🎮</span>
+                        <span data-translate="joinDiscord">Join Discord Server</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Staff Tab -->
+        <div id="staff-tab" class="tab-content">
+            <div class="info-cards">
+                <div class="info-card">
+                    <h3>👑 <span data-translate="ownerTitle">Owner</span></h3>
+                    <div class="admin" style="margin-top: 15px;">
+                        <div class="admin-status online"></div>
+                        <span class="admin-name">Abdalla_56_yt</span>
+                        <span class="admin-role" data-translate="founderOwner">Founder & Owner / LSPD Chief</span>
+                    </div>
+                    <p style="margin-top: 15px; opacity: 0.8;" data-translate="ownerDesc">The founder of ALSQOOR Gaming Network. Responsible for server management and community growth. Also serves as LSPD Chief.</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>👮 <span data-translate="policeTitle">Police Department (LSPD)</span></h3>
+                    <div style="margin-top: 15px;">
+                        <div class="admin" style="margin-bottom: 10px;">
+                            <div class="admin-status offline"></div>
+                            <span class="admin-name">-RHM</span>
+                            <span class="admin-role">Chief of Police</span>
+                        </div>
+                        <div class="admin" style="margin-bottom: 10px;">
+                            <div class="admin-status offline"></div>
+                            <span class="admin-name">LSPD-ASSISTANT</span>
+                            <span class="admin-role">LSPD Assistant</span>
+                        </div>
+                        <div class="admin">
+                            <div class="admin-status offline"></div>
+                            <span class="admin-name">Shahin12768</span>
+                            <span class="admin-role">Officer</span>
+                        </div>
+                    </div>
+                    <p style="margin-top: 15px; opacity: 0.8;" data-translate="policeDesc">Our dedicated police force maintains law and order across Los Santos.</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>⚙️ <span data-translate="managementTitle">Server Management</span></h3>
+                    <div style="margin-top: 15px;">
+                        <div class="admin" style="margin-bottom: 10px;">
+                            <div class="admin-status offline"></div>
+                            <span class="admin-name">LSPD-ASSISTANT (breezy3352)</span>
+                            <span class="admin-role">MC Moderator & FiveM Manager</span>
+                        </div>
+                        <div class="admin">
+                            <div class="admin-status offline"></div>
+                            <span class="admin-name">FiveM_Manager</span>
+                            <span class="admin-role">Bot Manager</span>
+                        </div>
+                    </div>
+                    <p style="margin-top: 15px; opacity: 0.8;" data-translate="managementDesc">Technical staff managing server operations and player support.</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>🛡️ <span data-translate="applyTitle">How to Apply</span></h3>
+                    <p data-translate="applyText">Interested in joining our staff team? We're always looking for dedicated community members who want to help make our servers better. Requirements:</p>
+                    <p style="margin-top: 10px;" data-translate="requirements">• Active in our community<br>• Mature and responsible<br>• Good knowledge of server rules<br>• Available for regular duties</p>
+                    <p style="margin-top: 15px; opacity: 0.8;" data-translate="applyDiscord">Apply through our Discord server!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PC Build Tab -->
+        <div id="pc-tab" class="tab-content">
+            <div class="header" style="margin-bottom: 30px;">
+                <h2 style="font-size: 2rem; margin-bottom: 15px;">💻 <span data-translate="pcBuildTitle">Owner's Gaming PC Build</span></h2>
+                <p data-translate="pcBuildSubtitle">High-performance setup powering ALSQOOR Gaming Network</p>
+            </div>
+
+            <div class="info-cards">
+                <div class="info-card">
+                    <h3>🔧 <span data-translate="processor">Processor</span></h3>
+                    <p style="font-weight: 600; color: #00d4ff; margin-top: 10px;">INTEL Core i7-14700KF</p>
+                    <p style="opacity: 0.8; margin-top: 5px;">20 Cores, 28 Threads - Unlocked for Overclocking</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>🎮 <span data-translate="gpu">Graphics Card</span></h3>
+                    <p style="font-weight: 600; color: #00d4ff; margin-top: 10px;">INNO3D RTX 4070 SUPER</p>
+                    <p style="opacity: 0.8; margin-top: 5px;">Twin X2 OC White Edition - 12GB GDDR6X</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>🎯 <span data-translate="motherboard">Motherboard</span></h3>
+                    <p style="font-weight: 600; color: #00d4ff; margin-top: 10px;">ASUS PRIME B760-PLUS</p>
+                    <p style="opacity: 0.8; margin-top: 5px;">Gaming Motherboard - Intel B760 Chipset</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>⚡ <span data-translate="memory">Memory (RAM)</span></h3>
+                    <p style="font-weight: 600; color: #00d4ff; margin-top: 10px;">T-FORCE DELTA RGB DDR5</p>
+                    <p style="opacity: 0.8; margin-top: 5px;">32GB (2x16GB) White - 6000MHz</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>💾 <span data-translate="storage">Primary Storage</span></h3>
+                    <p style="font-weight: 600; color: #00d4ff; margin-top: 10px;">PNY CS2230 M.2 NVMe SSD</p>
+                    <p style="opacity: 0.8; margin-top: 5px;">1TB M.2 2280 - High-Speed PCIe Gen3</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>🗄️ <span data-translate="secondaryStorage">Secondary Storage</span></h3>
+                    <p style="font-weight: 600; color: #00d4ff; margin-top: 10px;">Seagate HDD</p>
+                    <p style="opacity: 0.8; margin-top: 5px;">28TB - Mass Storage for Games & Media</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>❄️ <span data-translate="cooling">CPU Cooler</span></h3>
+                    <p style="font-weight: 600; color: #00d4ff; margin-top: 10px;">DeepCool LE240 AIO</p>
+                    <p style="opacity: 0.8; margin-top: 5px;">240mm ARGB Liquid Cooler - White</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>⚡ <span data-translate="psu">Power Supply</span></h3>
+                    <p style="font-weight: 600; color: #00d4ff; margin-top: 10px;">DeepCool PF750D</p>
+                    <p style="opacity: 0.8; margin-top: 5px;">750W 80+ Gold Certified PSU</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>🏠 <span data-translate="case">PC Case</span></h3>
+                    <p style="font-weight: 600; color: #00d4ff; margin-top: 10px;">ASUS TUF Gaming GT302</p>
+                    <p style="opacity: 0.8; margin-top: 5px;">ARGB ATX Mid-Tower - White Edition</p>
+                </div>
+            </div>
+
+            <div class="info-card" style="margin-top: 30px; background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(59, 130, 246, 0.1)); border: 2px solid var(--accent-primary);">
+                <h3 style="color: var(--accent-primary);">🚀 <span data-translate="performance">Performance Highlights</span></h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
+                    <div style="text-align: center; padding: 15px; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
+                        <div style="font-size: 2rem; font-weight: 700; color: #00d4ff;">4K</div>
+                        <div style="opacity: 0.8; margin-top: 5px;" data-translate="gaming">Gaming Ready</div>
+                    </div>
+                    <div style="text-align: center; padding: 15px; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
+                        <div style="font-size: 2rem; font-weight: 700; color: #10b981;">240Hz</div>
+                        <div style="opacity: 0.8; margin-top: 5px;" data-translate="refresh">High Refresh Rate</div>
+                    </div>
+                    <div style="text-align: center; padding: 15px; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
+                        <div style="font-size: 2rem; font-weight: 700; color: #f59e0b;">RGB</div>
+                        <div style="opacity: 0.8; margin-top: 5px;" data-translate="lighting">Full RGB Lighting</div>
+                    </div>
+                </div>
+                <p style="margin-top: 20px; opacity: 0.8; text-align: center;" data-translate="pcNote">This powerful rig handles server hosting, content creation, and high-end gaming with ease!</p>
+            </div>
+        </div>
+
+        <div class="last-updated">
+            <div><span data-translate="lastUpdated">Last Updated</span>: <span id="last-update">Loading...</span></div>
+            <button class="refresh-btn" onclick="refreshStats()">🔄 <span data-translate="refreshStats">Refresh Stats</span></button>
+        </div>
+    </div>
+
+    <script>
+        // Disable right-click
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        
+        // Disable common keyboard shortcuts for view source
+        document.addEventListener('keydown', function(e) {
+            // Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
+            if (e.keyCode == 123 || // F12
+                (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) ||
+                (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) ||
+                (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0))) {
+                e.preventDefault();
+                return false;
+            }
+        });
+        
+        // Disable text selection
+        document.addEventListener('selectstart', event => event.preventDefault());
+        
+        // Translation data
+        const translations = {
+            en: {
+                brand: "🎮 ALSQOOR Gaming",
+                language: "Language",
+                settings: "Settings",
+                darkMode: "Dark Mode",
+                autoRefresh: "Auto Refresh",
+                notifications: "Notifications",
+                account: "Account",
+                login: "Login",
+                register: "Register",
+                logout: "Logout",
+                username: "Username",
+                password: "Password",
+                email: "Email",
+                cancel: "Cancel",
+                close: "Close",
+                advancedSettings: "Advanced Settings",
+                profile: "Profile",
+                themes: "Themes",
+                customize: "Customize",
+                apps: "Apps",
+                tos: "Terms",
+                changeAvatar: "Change Avatar",
+                displayName: "Display Name",
+                bio: "Bio",
+                saveProfile: "Save Profile",
+                themesComingSoon: "Custom Themes Coming Soon!",
+                themesDesc: "We're working on amazing custom themes for your dashboard. Stay tuned!",
+                customizeView: "Customize Your View",
+                showServerStats: "Show Server Stats",
+                showStaffOnline: "Show Staff Online",
+                showDiscordSection: "Show Discord Section",
+                showPCBuild: "Show PC Build Tab",
+                showAnimations: "Enable Animations",
+                saveCustomize: "Save Preferences",
+                mobileApps: "Mobile & Desktop Apps",
+                appsDesc: "ALSQOOR Gaming apps are coming soon to your favorite platforms!",
+                notifyMe: "Want to be notified when we launch? Join our Discord!",
+                tosTitle: "Terms of Service",
+                tosAcceptance: "1. Acceptance of Terms",
+                tosAcceptanceText: "By accessing and using ALSQOOR Gaming Network services, you accept and agree to be bound by the terms and provision of this agreement.",
+                tosConduct: "2. User Conduct",
+                tosConductText: "You agree to use our services respectfully and lawfully. Prohibited activities include:",
+                tosNoCheat: "Using cheats, hacks, or exploits",
+                tosNoHarass: "Harassment or bullying of other users",
+                tosNoSpam: "Spamming or advertising without permission",
+                tosNoImpersonate: "Impersonating staff or other users",
+                tosAccount: "3. Account Responsibility",
+                tosAccountText: "You are responsible for maintaining the security of your account and for all activities that occur under your account.",
+                tosModeration: "4. Server Moderation",
+                tosModerationText: "Our staff reserves the right to moderate, warn, kick, or ban users who violate these terms or server rules.",
+                tosPrivacy: "5. Privacy & Data",
+                tosPrivacyText: "We collect minimal data necessary for server operation. We do not sell your personal information to third parties.",
+                tosChanges: "6. Changes to Terms",
+                tosChangesText: "We reserve the right to modify these terms at any time. Continued use of our services constitutes acceptance of modified terms.",
+                tosContact: "7. Contact",
+                tosContactText: "For questions about these terms, contact us through our Discord server.",
+                tosAgree: "By using ALSQOOR Gaming Network, you agree to these terms.",
+                title: "🎮 ALSQOOR Gaming Network",
+                subtitle: "Your ultimate gaming destination - Minecraft & FiveM servers",
+                servers: "Servers",
+                community: "Community",
+                staff: "Staff Team",
+                pcBuild: "PC Build",
+                online: "Online",
+                offline: "Offline",
+                players: "Players",
+                max: "Max",
+                ping: "Ping (ms)",
+                version: "Version",
+                queue: "Queue",
+                staffOnline: "Staff Online",
+                owner: "Owner",
+                admin: "Admin",
+                copyIp: "Copy IP",
+                copyConnect: "Copy Connect Code",
+                aboutTitle: "About ALSQOOR Gaming",
+                aboutText: "Welcome to ALSQOOR Gaming Network! We're a friendly community of gamers who love Minecraft survival and FiveM roleplay. Join us for epic adventures, creative builds, and immersive roleplay experiences.",
+                rulesTitle: "Server Rules",
+                rulesText: "• No griefing or trolling<br>• Respect all players and staff<br>• No cheating or exploits<br>• Keep chat family-friendly<br>• Follow staff instructions",
+                eventsTitle: "Events & Activities",
+                eventsText: "We regularly host building contests, PvP tournaments, roleplay scenarios, and community events. Follow our Discord for announcements and join the fun!",
+                supportTitle: "Support",
+                supportText: "Need help? Contact our staff team through Discord or use in-game support commands. We're here to ensure you have the best gaming experience possible.",
+                discordTitle: "Join Our Discord Community",
+                discordSubtitle: "Connect with fellow gamers, get support, and stay updated!",
+                joinDiscord: "Join Discord Server",
+                ownerTitle: "Owner",
+                founderOwner: "Founder & Owner / LSPD Chief",
+                ownerDesc: "The founder of ALSQOOR Gaming Network. Responsible for server management and community growth. Also serves as LSPD Chief.",
+                adminsTitle: "Administrators",
+                adminsDesc: "Our dedicated admin team ensures fair play and helps resolve player issues.",
+                policeTitle: "Police Department (LSPD)",
+                policeDesc: "Our dedicated police force maintains law and order across Los Santos.",
+                managementTitle: "Server Management",
+                managementDesc: "Technical staff managing server operations and player support.",
+                applyTitle: "How to Apply",
+                applyText: "Interested in joining our staff team? We're always looking for dedicated community members who want to help make our servers better. Requirements:",
+                requirements: "• Active in our community<br>• Mature and responsible<br>• Good knowledge of server rules<br>• Available for regular duties",
+                applyDiscord: "Apply through our Discord server!",
+                lastUpdated: "Last Updated",
+                refreshStats: "Refresh Stats",
+                pcBuildTitle: "Owner's Gaming PC Build",
+                pcBuildSubtitle: "High-performance setup powering ALSQOOR Gaming Network",
+                processor: "Processor",
+                gpu: "Graphics Card",
+                motherboard: "Motherboard",
+                memory: "Memory (RAM)",
+                storage: "Primary Storage",
+                secondaryStorage: "Secondary Storage",
+                cooling: "CPU Cooler",
+                psu: "Power Supply",
+                case: "PC Case",
+                performance: "Performance Highlights",
+                gaming: "Gaming Ready",
+                refresh: "High Refresh Rate",
+                lighting: "Full RGB Lighting",
+                pcNote: "This powerful rig handles server hosting, content creation, and high-end gaming with ease!"
+            },
+            ar: {
+                brand: "🎮 شبكة الصقور للألعاب",
+                language: "اللغة",
+                settings: "الإعدادات",
+                darkMode: "الوضع الداكن",
+                autoRefresh: "التحديث التلقائي",
+                notifications: "الإشعارات",
+                account: "الحساب",
+                login: "تسجيل الدخول",
+                register: "إنشاء حساب",
+                logout: "تسجيل الخروج",
+                username: "اسم المستخدم",
+                password: "كلمة المرور",
+                email: "البريد الإلكتروني",
+                cancel: "إلغاء",
+                close: "إغلاق",
+                advancedSettings: "الإعدادات المتقدمة",
+                profile: "الملف الشخصي",
+                themes: "السمات",
+                customize: "تخصيص",
+                apps: "التطبيقات",
+                tos: "الشروط",
+                changeAvatar: "تغيير الصورة",
+                displayName: "اسم العرض",
+                bio: "النبذة",
+                saveProfile: "حفظ الملف الشخصي",
+                themesComingSoon: "السمات المخصصة قريباً!",
+                themesDesc: "نحن نعمل على سمات مذهلة للوحة التحكم. ترقبوا!",
+                customizeView: "تخصيص العرض",
+                showServerStats: "إظهار إحصائيات الخادم",
+                showStaffOnline: "إظهار الإدارة المتصلة",
+                showDiscordSection: "إظهار قسم ديسكورد",
+                showPCBuild: "إظهار تبويب الكمبيوتر",
+                showAnimations: "تفعيل الرسوم المتحركة",
+                saveCustomize: "حفظ التفضيلات",
+                mobileApps: "تطبيقات الهاتف والكمبيوتر",
+                appsDesc: "تطبيقات شبكة الصقور للألعاب قادمة قريباً!",
+                notifyMe: "تريد أن يتم إعلامك عند الإطلاق؟ انضم لديسكورد!",
+                tosTitle: "شروط الخدمة",
+                tosAcceptance: "١. قبول الشروط",
+                tosAcceptanceText: "باستخدام خدمات شبكة الصقور للألعاب، فإنك توافق على الالتزام بهذه الشروط والأحكام.",
+                tosConduct: "٢. سلوك المستخدم",
+                tosConductText: "توافق على استخدام خدماتنا باحترام وقانونية. الأنشطة المحظورة تشمل:",
+                tosNoCheat: "استخدام الغش أو الاختراقات",
+                tosNoHarass: "مضايقة أو تنمر على المستخدمين الآخرين",
+                tosNoSpam: "الإزعاج أو الإعلان دون إذن",
+                tosNoImpersonate: "انتحال شخصية الإدارة أو المستخدمين الآخرين",
+                tosAccount: "٣. مسؤولية الحساب",
+                tosAccountText: "أنت مسؤول عن الحفاظ على أمان حسابك وعن جميع الأنشطة التي تحدث تحت حسابك.",
+                tosModeration: "٤. إدارة الخادم",
+                tosModerationText: "تحتفظ إدارتنا بالحق في المراقبة والتحذير والطرد أو الحظر للمستخدمين الذين ينتهكون هذه الشروط.",
+                tosPrivacy: "٥. الخصوصية والبيانات",
+                tosPrivacyText: "نجمع الحد الأدنى من البيانات اللازمة لتشغيل الخادم. لا نبيع معلوماتك الشخصية لأطراف ثالثة.",
+                tosChanges: "٦. تغييرات على الشروط",
+                tosChangesText: "نحتفظ بالحق في تعديل هذه الشروط في أي وقت. الاستمرار في استخدام خدماتنا يشكل قبولاً للشروط المعدلة.",
+                tosContact: "٧. الاتصال",
+                tosContactText: "للأسئلة حول هذه الشروط، اتصل بنا عبر خادم ديسكورد.",
+                tosAgree: "باستخدام شبكة الصقور للألعاب، فإنك توافق على هذه الشروط.",
+                title: "🎮 شبكة الصقور للألعاب",
+                subtitle: "وجهتك النهائية للألعاب - خوادم ماين كرافت و FiveM",
+                servers: "الخوادم",
+                community: "المجتمع",
+                staff: "فريق الإدارة",
+                pcBuild: "مواصفات الكمبيوتر",
+                online: "متصل",
+                offline: "غير متصل",
+                players: "اللاعبون",
+                max: "الحد الأقصى",
+                ping: "البنق (مللي ثانية)",
+                version: "الإصدار",
+                queue: "قائمة الانتظار",
+                staffOnline: "الإدارة المتصلة",
+                owner: "المالك",
+                admin: "مشرف",
+                copyIp: "نسخ العنوان",
+                copyConnect: "نسخ رمز الاتصال",
+                aboutTitle: "حول شبكة الصقور للألعاب",
+                aboutText: "مرحباً بكم في شبكة الصقور للألعاب! نحن مجتمع ودود من اللاعبين الذين يحبون البقاء في ماين كرافت ولعب الأدوار في FiveM. انضموا إلينا للمغامرات الملحمية والبناء الإبداعي وتجارب لعب الأدوار الغامرة.",
+                rulesTitle: "قوانين الخادم",
+                rulesText: "• لا تخريب أو إزعاج<br>• احترام جميع اللاعبين والإدارة<br>• لا غش أو استغلال<br>• حافظ على الدردشة مناسبة للعائلة<br>• اتبع تعليمات الإدارة",
+                eventsTitle: "الأحداث والأنشطة",
+                eventsText: "نستضيف بانتظام مسابقات البناء وبطولات PvP وسيناريوهات لعب الأدوار وأحداث المجتمع. تابع ديسكورد للإعلانات وانضم للمتعة!",
+                supportTitle: "الدعم",
+                supportText: "تحتاج مساعدة؟ اتصل بفريق الإدارة عبر ديسكورد أو استخدم أوامر الدعم في اللعبة. نحن هنا لضمان حصولك على أفضل تجربة لعب ممكنة.",
+                discordTitle: "انضم لمجتمع ديسكورد",
+                discordSubtitle: "تواصل مع اللاعبين الآخرين، احصل على الدعم، وابق محدثاً!",
+                joinDiscord: "انضم لخادم ديسكورد",
+                ownerTitle: "المالك",
+                founderOwner: "المؤسس والمالك / رئيس LSPD",
+                ownerDesc: "مؤسس شبكة الصقور للألعاب. مسؤول عن إدارة الخادم ونمو المجتمع. يعمل أيضاً كرئيس LSPD.",
+                adminsTitle: "المشرفون",
+                adminsDesc: "فريق الإدارة المتفاني يضمن اللعب العادل ويساعد في حل مشاكل اللاعبين.",
+                policeTitle: "قسم الشرطة (LSPD)",
+                policeDesc: "قوة الشرطة المتفانية تحافظ على القانون والنظام في لوس سانتوس.",
+                managementTitle: "إدارة الخادم",
+                managementDesc: "الطاقم التقني يدير عمليات الخادم ودعم اللاعبين.",
+                applyTitle: "كيفية التقديم",
+                applyText: "مهتم بالانضمام لفريق الإدارة؟ نبحث دائماً عن أعضاء مجتمع متفانين يريدون مساعدة خوادمنا على التحسن. المتطلبات:",
+                requirements: "• نشط في مجتمعنا<br>• ناضج ومسؤول<br>• معرفة جيدة بقوانين الخادم<br>• متاح للواجبات المنتظمة",
+                applyDiscord: "قدم طلبك عبر خادم ديسكورد!",
+                lastUpdated: "آخر تحديث",
+                refreshStats: "تحديث الإحصائيات",
+                pcBuildTitle: "جهاز الكمبيوتر الخاص بالمالك",
+                pcBuildSubtitle: "إعداد عالي الأداء لتشغيل شبكة الصقور للألعاب",
+                processor: "المعالج",
+                gpu: "كرت الشاشة",
+                motherboard: "اللوحة الأم",
+                memory: "الذاكرة العشوائية",
+                storage: "وحدة التخزين الأساسية",
+                secondaryStorage: "وحدة التخزين الثانوية",
+                cooling: "نظام التبريد",
+                psu: "مزود الطاقة",
+                case: "صندوق الكمبيوتر",
+                performance: "مميزات الأداء",
+                gaming: "جاهز للألعاب 4K",
+                refresh: "معدل تحديث عالي",
+                lighting: "إضاءة RGB كاملة",
+                pcNote: "هذا الجهاز القوي يتعامل مع استضافة الخوادم وإنشاء المحتوى والألعاب عالية الجودة بسهولة!"
+            }
+        };
+
+        // Settings and state management
+        let currentLanguage = 'en';
+        let isDarkMode = true;
+        let autoRefresh = true;
+        let notifications = false;
+        let currentUser = null;
+
+        // Load saved settings
+        function loadSettings() {
+            const saved = JSON.parse(localStorage.getItem('alsqoorSettings') || '{}');
+            currentLanguage = saved.language || 'en';
+            isDarkMode = saved.darkMode !== false;
+            autoRefresh = saved.autoRefresh !== false;
+            notifications = saved.notifications || false;
+            currentUser = JSON.parse(localStorage.getItem('alsqoorUser') || 'null');
+
+            // Apply settings
+            updateLanguage();
+            updateTheme();
+            updateSwitches();
+            updateUserUI();
+        }
+
+        // Save settings
+        function saveSettings() {
+            const settings = {
+                language: currentLanguage,
+                darkMode: isDarkMode,
+                autoRefresh: autoRefresh,
+                notifications: notifications
+            };
+            localStorage.setItem('alsqoorSettings', JSON.stringify(settings));
+        }
+
+        // Update switches UI
+        function updateSwitches() {
+            document.getElementById('theme-switch').classList.toggle('active', isDarkMode);
+            document.getElementById('refresh-switch').classList.toggle('active', autoRefresh);
+            document.getElementById('notification-switch').classList.toggle('active', notifications);
+        }
+
+        // Language functions
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            updateLanguage();
+            saveSettings();
+            
+            // Update language buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if ((lang === 'en' && btn.textContent === 'English') || 
+                    (lang === 'ar' && btn.textContent === 'العربية')) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        function updateLanguage() {
+            document.documentElement.lang = currentLanguage;
+            document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+            
+            // Update all translatable elements
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.getAttribute('data-translate');
+                if (translations[currentLanguage][key]) {
+                    element.innerHTML = translations[currentLanguage][key];
+                }
+            });
+        }
+
+        // Theme functions
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            updateTheme();
+            saveSettings();
+            updateSwitches();
+        }
+
+        function updateTheme() {
+            document.body.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
+        }
+
+        // Settings toggles
+        function toggleAutoRefresh() {
+            autoRefresh = !autoRefresh;
+            saveSettings();
+            updateSwitches();
+        }
+
+        function toggleNotifications() {
+            notifications = !notifications;
+            saveSettings();
+            updateSwitches();
+        }
+
+        // Sidebar functions
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const hamburger = document.getElementById('hamburger');
+            
+            sidebar.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        }
+
+        // Modal functions
+        function showModal(type) {
+            const overlay = document.getElementById('modal-overlay');
+            const authModal = document.getElementById('auth-modal');
+            const settingsModal = document.getElementById('settings-modal');
+            
+            authModal.style.display = 'none';
+            settingsModal.style.display = 'none';
+            
+            const title = document.getElementById('modal-title');
+            const submitBtn = document.getElementById('submit-btn');
+            const emailGroup = document.getElementById('email-group');
+            
+            if (type === 'register') {
+                title.setAttribute('data-translate', 'register');
+                submitBtn.setAttribute('data-translate', 'register');
+                emailGroup.style.display = 'block';
+                authModal.style.display = 'block';
+            } else {
+                title.setAttribute('data-translate', 'login');
+                submitBtn.setAttribute('data-translate', 'login');
+                emailGroup.style.display = 'none';
+                authModal.style.display = 'block';
+            }
+            
+            updateLanguage();
+            overlay.classList.add('active');
+            document.getElementById('auth-form').setAttribute('data-type', type);
+        }
+
+        function showSettingsModal() {
+            const overlay = document.getElementById('modal-overlay');
+            const authModal = document.getElementById('auth-modal');
+            const settingsModal = document.getElementById('settings-modal');
+            
+            authModal.style.display = 'none';
+            settingsModal.style.display = 'block';
+            
+            overlay.classList.add('active');
+            loadUserProfile();
+            toggleSidebar(); // Close sidebar when opening settings
+        }
+
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.remove('active');
+            document.getElementById('auth-form').reset();
+        }
+
+        function switchSettingsTab(tabName) {
+            document.querySelectorAll('.settings-tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.settings-tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabName + '-settings').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function loadUserProfile() {
+            if (currentUser) {
+                const avatar = document.getElementById('profile-avatar-large');
+                const displayName = document.getElementById('display-name');
+                const bio = document.getElementById('user-bio');
+                
+                avatar.textContent = currentUser.username.charAt(0).toUpperCase();
+                displayName.value = currentUser.displayName || currentUser.username;
+                bio.value = currentUser.bio || '';
+            }
+        }
+
+        function changeAvatar() {
+            alert(translations[currentLanguage].changeAvatar + '! (Feature coming soon)');
+        }
+
+        function saveProfile() {
+            if (currentUser) {
+                currentUser.displayName = document.getElementById('display-name').value;
+                currentUser.bio = document.getElementById('user-bio').value;
+                localStorage.setItem('alsqoorUser', JSON.stringify(currentUser));
+                
+                updateUserUI();
+                alert('Profile saved successfully! ✅');
+            }
+        }
+
+        function toggleCustomize(checkbox, setting) {
+            checkbox.classList.toggle('checked');
+        }
+
+        function saveCustomize() {
+            alert('Preferences saved! ✅');
+        }
+
+        function login(userData) {
+            currentUser = userData;
+            localStorage.setItem('alsqoorUser', JSON.stringify(currentUser));
+            updateUserUI();
+            closeModal();
+            toggleSidebar();
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('alsqoorUser');
+            updateUserUI();
+            toggleSidebar();
+        }
+
+        function updateUserUI() {
+            const userInfo = document.getElementById('user-info');
+            const authSection = document.getElementById('auth-section');
+            const loggedInSection = document.getElementById('logged-in-section');
+            const userAvatar = document.getElementById('user-avatar');
+            const userName = document.getElementById('user-name');
+
+            if (currentUser) {
+                userInfo.style.display = 'flex';
+                authSection.style.display = 'none';
+                loggedInSection.style.display = 'block';
+                userAvatar.textContent = currentUser.username.charAt(0).toUpperCase();
+                userName.textContent = currentUser.username;
+            } else {
+                userInfo.style.display = 'none';
+                authSection.style.display = 'block';
+                loggedInSection.style.display = 'none';
+            }
+        }
+
+        // Tab system
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabName + '-tab').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Copy to clipboard function
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const notification = document.createElement('div');
+                notification.textContent = `${translations[currentLanguage].copyIp || 'Copied'}: ${text}`;
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    ${currentLanguage === 'ar' ? 'left' : 'right'}: 20px;
+                    background: linear-gradient(45deg, #10b981, #059669);
+                    color: white;
+                    padding: 12px 20px;
+                    border-radius: 10px;
+                    z-index: 2000;
+                    font-weight: 600;
+                    box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+                    animation: slideIn 0.3s ease;
+                `;
+                
+                document.body.appendChild(notification);
+                setTimeout(() => notification.remove(), 3000);
+            }).catch(() => {
+                alert(`${translations[currentLanguage].copyIp || 'Copy this'}: ${text}`);
+            });
+        }
+
+        // Check Minecraft server status
+        async function checkMinecraftServer() {
+            try {
+                const response = await fetch('https://api.mcsrvstat.us/2/ALSQOOR-SMP.aternos.me');
+                const data = await response.json();
+                
+                const statusElement = document.getElementById('mc-status');
+                const statusText = document.getElementById('mc-status-text');
+                const playersElement = document.getElementById('mc-players');
+                const pingElement = document.getElementById('mc-ping');
+                const versionElement = document.getElementById('mc-version');
+                
+                if (data.online) {
+                    statusElement.className = 'status-indicator status-online';
+                    statusText.textContent = translations[currentLanguage].online;
+                    playersElement.textContent = data.players.online;
+                    pingElement.textContent = data.debug?.ping ? Math.round(data.debug.ping) : '--';
+                    if (data.version) {
+                        versionElement.textContent = data.version;
+                    }
+                } else {
+                    statusElement.className = 'status-indicator status-offline';
+                    statusText.textContent = translations[currentLanguage].offline;
+                    playersElement.textContent = '0';
+                    pingElement.textContent = '--';
+                }
+            } catch (error) {
+                console.log('Could not fetch MC server status:', error);
+            }
+        }
+
+        function refreshStats() {
+            checkMinecraftServer();
+            
+            const fivemPlayers = Math.floor(Math.random() * 20) + 8;
+            const fivemPing = Math.floor(Math.random() * 20) + 20;
+            
+            document.getElementById('fivem-players').textContent = fivemPlayers;
+            document.getElementById('fivem-ping').textContent = fivemPing;
+            
+            const now = new Date();
+            const timeString = now.toLocaleDateString() + ' at ' + now.toLocaleTimeString();
+            document.getElementById('last-update').textContent = timeString;
+            
+            const refreshBtn = document.querySelector('.refresh-btn');
+            refreshBtn.style.transform = 'rotate(360deg)';
+            setTimeout(() => refreshBtn.style.transform = '', 500);
+        }
+
+        // Event listeners
+        document.getElementById('hamburger').addEventListener('click', toggleSidebar);
+
+        document.getElementById('auth-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const type = this.getAttribute('data-type');
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (type === 'register') {
+                const email = document.getElementById('email').value;
+                // Simulate registration
+                login({ username, email });
+            } else {
+                // Simulate login
+                login({ username });
+            }
+        });
+
+        // Close sidebar when clicking outside
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const hamburger = document.getElementById('hamburger');
+            
+            if (!sidebar.contains(e.target) && !hamburger.contains(e.target) && sidebar.classList.contains('active')) {
+                toggleSidebar();
+            }
+        });
+
+        // Close modal when clicking overlay
+        document.getElementById('modal-overlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Initialize
+        window.addEventListener('load', () => {
+            loadSettings();
+            refreshStats();
+            
+            const cards = document.querySelectorAll('.server-card, .info-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+
+        // Auto-refresh
+        setInterval(() => {
+            if (autoRefresh) {
+                refreshStats();
+            }
+        }, 60000);
+
+        // Simulate admin status updates
+        setInterval(() => {
+            const adminStatuses = document.querySelectorAll('.admin-status');
+            adminStatuses.forEach(status => {
+                if (Math.random() > 0.8) {
+                    status.classList.toggle('online');
+                    status.classList.toggle('offline');
+                }
+            });
+        }, 120000);
+
+        // Add CSS animation keyframes
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(${currentLanguage === 'ar' ? '' : '-'}100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
+  
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyCVIHFoJ9Wsd9m4-XkLUi-WjUlexWYAt8Q",
+    authDomain: "alsqoor-serverstats.firebaseapp.com",
+    projectId: "alsqoor-serverstats",
+    storageBucket: "alsqoor-serverstats.firebasestorage.app",
+    messagingSenderId: "344319423233",
+    appId: "1:344319423233:web:526074be874e69a6042100",
+    measurementId: "G-C9W4CM01CF"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
+</html>
