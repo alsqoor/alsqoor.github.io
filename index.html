@@ -517,6 +517,164 @@
             margin-left: 20px;
         }
 
+        /* Shop Styles */
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .game-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-primary);
+            box-shadow: 0 15px 35px rgba(124, 58, 237, 0.3);
+        }
+
+        .game-image {
+            width: 100%;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .game-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.8) 100%);
+        }
+
+        .game-info {
+            padding: 20px;
+        }
+
+        .game-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .game-description {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .game-price {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .price-tag {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #10b981;
+        }
+
+        .buy-btn {
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .buy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(124, 58, 237, 0.4);
+        }
+
+        .game-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ef4444;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .game-badge.hot {
+            background: linear-gradient(45deg, #f59e0b, #ef4444);
+        }
+
+        .game-badge.new {
+            background: linear-gradient(45deg, #10b981, #059669);
+        }
+
+        .payment-methods {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .payment-btn {
+            flex: 1;
+            min-width: 80px;
+            height: 35px;
+            border: none;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-btn.applepay {
+            background: black;
+            color: white;
+        }
+
+        .payment-btn.applepay:hover {
+            background: #1a1a1a;
+            transform: translateY(-2px);
+        }
+
+        .payment-btn.paypal {
+            background: #0070ba;
+            color: white;
+        }
+
+        .payment-btn.paypal:hover {
+            background: #005ea6;
+            transform: translateY(-2px);
+        }
+
         /* Main Content */
         .container {
             max-width: 1200px;
@@ -1318,6 +1476,7 @@
             <button class="tab-btn" onclick="switchTab('community')">👥 <span data-translate="community">Community</span></button>
             <button class="tab-btn" onclick="switchTab('staff')">👑 <span data-translate="staff">Staff Team</span></button>
             <button class="tab-btn" onclick="switchTab('pc')">💻 <span data-translate="pcBuild">PC Build</span></button>
+            <button class="tab-btn" onclick="switchTab('shop')">🛒 <span data-translate="shop">Shop</span></button>
         </div>
 
         <!-- Servers Tab -->
@@ -1639,6 +1798,192 @@
             </div>
         </div>
 
+        <!-- Shop Tab -->
+        <div id="shop-tab" class="tab-content">
+            <div class="header" style="margin-bottom: 30px;">
+                <h2 style="font-size: 2rem; margin-bottom: 15px;">🛒 <span data-translate="shopTitle">Game Shop</span></h2>
+                <p data-translate="shopSubtitle">Get the best gaming deals curated by ALSQOOR Gaming</p>
+            </div>
+
+            <div class="shop-grid">
+                <!-- RDR2 -->
+                <div class="game-card">
+                    <div class="game-image">
+                        <img src="https://i.imgur.com/YGZg8h7.jpeg" alt="RDR2" style="object-fit: cover;">
+                        <div class="game-badge hot">HOT</div>
+                    </div>
+                    <div class="game-info">
+                        <h3 class="game-title">Red Dead Redemption 2</h3>
+                        <p class="game-description" data-translate="rdr2Desc">Epic open-world western adventure with stunning graphics and immersive story.</p>
+                        <div class="game-price">
+                            <span class="price-tag">3 AED</span>
+                        </div>
+                        <div class="payment-methods">
+                            <button class="payment-btn applepay" onclick="purchaseGame('rdr2', 'applepay', 3)"> Pay</button>
+                            <button class="payment-btn paypal" onclick="purchaseGame('rdr2', 'paypal', 3)">PayPal</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GTA 5 -->
+                <div class="game-card">
+                    <div class="game-image">
+                        <img src="https://i.imgur.com/pGuC91S.jpeg" alt="GTA 5" style="object-fit: cover;">
+                        <div class="game-badge hot">HOT</div>
+                    </div>
+                    <div class="game-info">
+                        <h3 class="game-title">Grand Theft Auto V</h3>
+                        <p class="game-description" data-translate="gta5Desc">The ultimate open-world crime experience with GTA Online multiplayer.</p>
+                        <div class="game-price">
+                            <span class="price-tag">3 AED</span>
+                        </div>
+                        <div class="payment-methods">
+                            <button class="payment-btn applepay" onclick="purchaseGame('gta5', 'applepay', 3)"> Pay</button>
+                            <button class="payment-btn paypal" onclick="purchaseGame('gta5', 'paypal', 3)">PayPal</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FC 25 -->
+                <div class="game-card">
+                    <div class="game-image">
+                        <img src="https://i.imgur.com/5vqE7kZ.jpeg" alt="FC 25" style="object-fit: cover;">
+                        <div class="game-badge new">NEW</div>
+                    </div>
+                    <div class="game-info">
+                        <h3 class="game-title">EA Sports FC 25</h3>
+                        <p class="game-description" data-translate="fc25Desc">The newest football simulation with improved gameplay and HyperMotion V.</p>
+                        <div class="game-price">
+                            <span class="price-tag">5 AED</span>
+                        </div>
+                        <div class="payment-methods">
+                            <button class="payment-btn applepay" onclick="purchaseGame('fc25', 'applepay', 5)"> Pay</button>
+                            <button class="payment-btn paypal" onclick="purchaseGame('fc25', 'paypal', 5)">PayPal</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Wand 777 -->
+                <div class="game-card">
+                    <div class="game-image">
+                        <img src="https://i.imgur.com/xWK8hVq.jpeg" alt="Ward 777" style="object-fit: cover;">
+                        <div class="game-badge">POPULAR</div>
+                    </div>
+                    <div class="game-info">
+                        <h3 class="game-title">Ward 777</h3>
+                        <p class="game-description" data-translate="wand777Desc">Exciting horror gaming experience with terrifying adventures.</p>
+                        <div class="game-price">
+                            <span class="price-tag">3 AED</span>
+                        </div>
+                        <div class="payment-methods">
+                            <button class="payment-btn applepay" onclick="purchaseGame('wand777', 'applepay', 3)"> Pay</button>
+                            <button class="payment-btn paypal" onclick="purchaseGame('wand777', 'paypal', 3)">PayPal</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Minecraft -->
+                <div class="game-card">
+                    <div class="game-image">
+                        <img src="https://i.imgur.com/2aLfJYy.jpeg" alt="Minecraft" style="object-fit: cover;">
+                    </div>
+                    <div class="game-info">
+                        <h3 class="game-title">Minecraft: Java Edition</h3>
+                        <p class="game-description" data-translate="minecraftDesc">The ultimate creative sandbox game - build, survive, and explore!</p>
+                        <div class="game-price">
+                            <span class="price-tag">3 AED</span>
+                        </div>
+                        <div class="payment-methods">
+                            <button class="payment-btn applepay" onclick="purchaseGame('minecraft', 'applepay', 3)"> Pay</button>
+                            <button class="payment-btn paypal" onclick="purchaseGame('minecraft', 'paypal', 3)">PayPal</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cyberpunk 2077 -->
+                <div class="game-card">
+                    <div class="game-image">
+                        <img src="https://i.imgur.com/EKZn3gJ.jpeg" alt="Cyberpunk 2077" style="object-fit: cover;">
+                    </div>
+                    <div class="game-info">
+                        <h3 class="game-title">Cyberpunk 2077</h3>
+                        <p class="game-description" data-translate="cyberpunkDesc">Futuristic open-world RPG set in Night City with enhanced updates.</p>
+                        <div class="game-price">
+                            <span class="price-tag">4 AED</span>
+                        </div>
+                        <div class="payment-methods">
+                            <button class="payment-btn applepay" onclick="purchaseGame('cyberpunk', 'applepay', 4)"> Pay</button>
+                            <button class="payment-btn paypal" onclick="purchaseGame('cyberpunk', 'paypal', 4)">PayPal</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Call of Duty -->
+                <div class="game-card">
+                    <div class="game-image">
+                        <img src="https://i.imgur.com/RWCnP9h.jpeg" alt="COD MW3" style="object-fit: cover;">
+                        <div class="game-badge new">NEW</div>
+                    </div>
+                    <div class="game-info">
+                        <h3 class="game-title">Call of Duty: MW III</h3>
+                        <p class="game-description" data-translate="codDesc">Fast-paced military FPS with intense multiplayer action.</p>
+                        <div class="game-price">
+                            <span class="price-tag">5 AED</span>
+                        </div>
+                        <div class="payment-methods">
+                            <button class="payment-btn applepay" onclick="purchaseGame('cod', 'applepay', 5)"> Pay</button>
+                            <button class="payment-btn paypal" onclick="purchaseGame('cod', 'paypal', 5)">PayPal</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Forza Horizon 5 -->
+                <div class="game-card">
+                    <div class="game-image">
+                        <img src="https://i.imgur.com/GvzHKFm.jpeg" alt="Forza Horizon 5" style="object-fit: cover;">
+                    </div>
+                    <div class="game-info">
+                        <h3 class="game-title">Forza Horizon 5</h3>
+                        <p class="game-description" data-translate="forzaDesc">Open-world racing in stunning Mexico with hundreds of cars.</p>
+                        <div class="game-price">
+                            <span class="price-tag">4 AED</span>
+                        </div>
+                        <div class="payment-methods">
+                            <button class="payment-btn applepay" onclick="purchaseGame('forza', 'applepay', 4)"> Pay</button>
+                            <button class="payment-btn paypal" onclick="purchaseGame('forza', 'paypal', 4)">PayPal</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-card" style="margin-top: 30px; background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(59, 130, 246, 0.1)); border: 2px solid var(--accent-primary);">
+                <h3 style="color: var(--accent-primary);">💎 <span data-translate="shopNote">Why Buy From Us?</span></h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
+                    <div style="text-align: center; padding: 15px;">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">✅</div>
+                        <div style="font-weight: 600;" data-translate="authentic">100% Authentic</div>
+                        <div style="opacity: 0.8; font-size: 0.9rem; margin-top: 5px;" data-translate="authenticDesc">Official game keys</div>
+                    </div>
+                    <div style="text-align: center; padding: 15px;">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">⚡</div>
+                        <div style="font-weight: 600;" data-translate="instant">Instant Delivery</div>
+                        <div style="opacity: 0.8; font-size: 0.9rem; margin-top: 5px;" data-translate="instantDesc">Keys sent immediately</div>
+                    </div>
+                    <div style="text-align: center; padding: 15px;">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">💰</div>
+                        <div style="font-weight: 600;" data-translate="bestPrice">Best Prices</div>
+                        <div style="opacity: 0.8; font-size: 0.9rem; margin-top: 5px;" data-translate="bestPriceDesc">Competitive deals</div>
+                    </div>
+                    <div style="text-align: center; padding: 15px;">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">🛡️</div>
+                        <div style="font-weight: 600;" data-translate="secure">Secure Payment</div>
+                        <div style="opacity: 0.8; font-size: 0.9rem; margin-top: 5px;" data-translate="secureDesc">Protected transactions</div>
+                    </div>
+                </div>
+                <p style="margin-top: 20px; opacity: 0.8; text-align: center;" data-translate="shopContact">Questions? Contact us on Discord for support!</p>
+            </div>
+        </div>
+
         <div class="last-updated">
             <div><span data-translate="lastUpdated">Last Updated</span>: <span id="last-update">Loading...</span></div>
             <button class="refresh-btn" onclick="refreshStats()">🔄 <span data-translate="refreshStats">Refresh Stats</span></button>
@@ -1730,6 +2075,7 @@
                 community: "Community",
                 staff: "Staff Team",
                 pcBuild: "PC Build",
+                shop: "Shop",
                 online: "Online",
                 offline: "Offline",
                 players: "Players",
@@ -1783,7 +2129,28 @@
                 gaming: "Gaming Ready",
                 refresh: "High Refresh Rate",
                 lighting: "Full RGB Lighting",
-                pcNote: "This powerful rig handles server hosting, content creation, and high-end gaming with ease!"
+                pcNote: "This powerful rig handles server hosting, content creation, and high-end gaming with ease!",
+                shopTitle: "Game Shop",
+                shopSubtitle: "Get the best gaming deals curated by ALSQOOR Gaming",
+                rdr2Desc: "Epic open-world western adventure with stunning graphics and immersive story.",
+                gta5Desc: "The ultimate open-world crime experience with GTA Online multiplayer.",
+                fc25Desc: "The newest football simulation with improved gameplay and HyperMotion V.",
+                wand777Desc: "Exciting horror gaming experience with terrifying adventures.",
+                minecraftDesc: "The ultimate creative sandbox game - build, survive, and explore!",
+                cyberpunkDesc: "Futuristic open-world RPG set in Night City with enhanced updates.",
+                codDesc: "Fast-paced military FPS with intense multiplayer action.",
+                forzaDesc: "Open-world racing in stunning Mexico with hundreds of cars.",
+                buyNow: "Buy Now",
+                shopNote: "Why Buy From Us?",
+                authentic: "100% Authentic",
+                authenticDesc: "Official game keys",
+                instant: "Instant Delivery",
+                instantDesc: "Keys sent immediately",
+                bestPrice: "Best Prices",
+                bestPriceDesc: "Competitive deals",
+                secure: "Secure Payment",
+                secureDesc: "Protected transactions",
+                shopContact: "Questions? Contact us on Discord for support!"
             },
             ar: {
                 brand: "🎮 شبكة الصقور للألعاب",
@@ -1849,6 +2216,7 @@
                 community: "المجتمع",
                 staff: "فريق الإدارة",
                 pcBuild: "مواصفات الكمبيوتر",
+                shop: "المتجر",
                 online: "متصل",
                 offline: "غير متصل",
                 players: "اللاعبون",
@@ -1902,7 +2270,28 @@
                 gaming: "جاهز للألعاب 4K",
                 refresh: "معدل تحديث عالي",
                 lighting: "إضاءة RGB كاملة",
-                pcNote: "هذا الجهاز القوي يتعامل مع استضافة الخوادم وإنشاء المحتوى والألعاب عالية الجودة بسهولة!"
+                pcNote: "هذا الجهاز القوي يتعامل مع استضافة الخوادم وإنشاء المحتوى والألعاب عالية الجودة بسهولة!",
+                shopTitle: "متجر الألعاب",
+                shopSubtitle: "احصل على أفضل عروض الألعاب المختارة من شبكة الصقور",
+                rdr2Desc: "مغامرة غربية ملحمية في عالم مفتوح مع رسومات مذهلة وقصة غامرة.",
+                gta5Desc: "تجربة الجريمة المطلقة في عالم مفتوح مع وضع اللعب الجماعي GTA Online.",
+                fc25Desc: "أحدث محاكاة لكرة القدم مع تحسينات في اللعب وتقنية HyperMotion V.",
+                wand777Desc: "تجربة ألعاب رعب مثيرة مع مغامرات مرعبة.",
+                minecraftDesc: "لعبة البناء الإبداعية المطلقة - ابنِ، عش، واستكشف!",
+                cyberpunkDesc: "لعبة تقمص أدوار مستقبلية في عالم مفتوح في مدينة Night City مع تحديثات محسّنة.",
+                codDesc: "لعبة إطلاق نار عسكرية سريعة الإيقاع مع حركة متعددة اللاعبين مكثفة.",
+                forzaDesc: "سباقات في عالم مفتوح في المكسيك المذهلة مع مئات السيارات.",
+                buyNow: "اشتر الآن",
+                shopNote: "لماذا تشتري منا؟",
+                authentic: "أصلي ١٠٠٪",
+                authenticDesc: "مفاتيح ألعاب رسمية",
+                instant: "تسليم فوري",
+                instantDesc: "المفاتيح ترسل فوراً",
+                bestPrice: "أفضل الأسعار",
+                bestPriceDesc: "عروض تنافسية",
+                secure: "دفع آمن",
+                secureDesc: "معاملات محمية",
+                shopContact: "أسئلة؟ اتصل بنا على ديسكورد للدعم!"
             }
         };
 
@@ -2099,6 +2488,68 @@
 
         function saveCustomize() {
             alert('Preferences saved! ✅');
+        }
+
+        function buyGame(gameId) {
+            const gameNames = {
+                'rdr2': 'Red Dead Redemption 2',
+                'gta5': 'Grand Theft Auto V',
+                'fc25': 'EA Sports FC 25',
+                'wand777': 'Wand 777',
+                'minecraft': 'Minecraft: Java Edition',
+                'cyberpunk': 'Cyberpunk 2077',
+                'cod': 'Call of Duty: MW III',
+                'forza': 'Forza Horizon 5'
+            };
+            
+            const gameName = gameNames[gameId] || 'this game';
+            const message = currentLanguage === 'ar' 
+                ? `شكراً لاهتمامك بـ ${gameName}! الرجاء التواصل معنا على ديسكورد لإتمام الشراء: https://discord.gg/Tpw2myjdVX`
+                : `Thanks for your interest in ${gameName}! Please contact us on Discord to complete your purchase: https://discord.gg/Tpw2myjdVX`;
+            
+            alert(message);
+        }
+
+        function purchaseGame(gameId, paymentMethod, price) {
+            // Check if user is logged in
+            if (!currentUser) {
+                const message = currentLanguage === 'ar' 
+                    ? 'الرجاء تسجيل الدخول أولاً للشراء!'
+                    : 'Please login first to make a purchase!';
+                alert(message);
+                showModal('login');
+                return;
+            }
+
+            const gameNames = {
+                'rdr2': 'Red Dead Redemption 2',
+                'gta5': 'Grand Theft Auto V',
+                'fc25': 'EA Sports FC 25',
+                'wand777': 'Wand 777',
+                'minecraft': 'Minecraft: Java Edition',
+                'cyberpunk': 'Cyberpunk 2077',
+                'cod': 'Call of Duty: MW III',
+                'forza': 'Forza Horizon 5'
+            };
+
+            const gameName = gameNames[gameId];
+
+            if (paymentMethod === 'paypal') {
+                // Redirect to PayPal with price
+                const paypalUrl = `https://paypal.me/ALsQoo/${price}AED`;
+                const confirmMessage = currentLanguage === 'ar'
+                    ? `ستتم إعادة توجيهك إلى PayPal لدفع ${price} AED لـ ${gameName}\n\nبعد الدفع، سنرسل لك مفتاح اللعبة على ديسكورد.`
+                    : `You'll be redirected to PayPal to pay ${price} AED for ${gameName}\n\nAfter payment, we'll send you the game key on Discord.`;
+                
+                if (confirm(confirmMessage)) {
+                    window.open(paypalUrl, '_blank');
+                }
+            } else if (paymentMethod === 'applepay') {
+                const message = currentLanguage === 'ar'
+                    ? `Apple Pay قريباً!\n\nحالياً، يرجى استخدام PayPal أو التواصل معنا على ديسكورد:\nhttps://discord.gg/Tpw2myjdVX`
+                    : `Apple Pay coming soon!\n\nFor now, please use PayPal or contact us on Discord:\nhttps://discord.gg/Tpw2myjdVX`;
+                alert(message);
+            }
         }
 
         function login(userData) {
